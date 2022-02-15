@@ -71,4 +71,10 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/t
 
 ### 依赖
 
-normalize.css
+normalize.css -- reset.css
+@craco/craco  -- webpack配置路径
+react-router-dom
+react-router-config
+styled-components
+antd
+ant-design/icons
