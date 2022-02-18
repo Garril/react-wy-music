@@ -92,3 +92,7 @@ redux
 react-redux  -- react组件和redux结合起来，比如connect和provider
 
 redux-thunk
+
+immutable
+
+redux-immutable
