@@ -45,7 +45,9 @@ const RankingList = memo((props) => {
           })
         }
       </div>
-      <div className='footer'></div>
+      <div className='footer'>
+        <a href="/todo">查看全部 {">"}</a>
+      </div>
     </TopRankingWrapper>
   )
 })

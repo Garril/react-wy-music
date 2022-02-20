@@ -14,6 +14,10 @@ import HotRecommend from './child-cpns/hot-recommend'
 import NewAlbum from './child-cpns/new-album'
 import Ranking from './child-cpns/ranking'
 
+import HotAnchor from './child-cpns/hot-anchor'
+import SettleSinger from './child-cpns/settle-singer'
+import UserLogin from './child-cpns/user-login'
+
 const WYRecommend = memo((props) => {
 
   return (
@@ -29,7 +33,11 @@ const WYRecommend = memo((props) => {
           <Ranking></Ranking>
         </RecommendLeft>
 
-        <RecommendRight></RecommendRight>
+        <RecommendRight>
+          <UserLogin></UserLogin>
+          <SettleSinger></SettleSinger>
+          <HotAnchor></HotAnchor>
+        </RecommendRight>
 
       </Content>
       

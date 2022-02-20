@@ -6,22 +6,20 @@ import {
   getNewAlbum,
   getTopList
 } from 'service/recommend'
+import { getArtistList } from 'service/recommend'
 
 const changeTopBannerAction = (res) => ({
   type: actionTypes.CHANGE_TOP_BANNERS,
   topBanners: res.banners
 })
-
 const changeHotRecommendAction = (res) => ({
   type: actionTypes.CHANGE_HOT_RECOMMEND,
   hotRecommends: res.result
 })
-
 const changeNewAlbumAction = (res) => ({
   type: actionTypes.CHANGE_NEW_ALBUM,
   newAlbums: res.albums
 })
-
 const changeUpRankingAction = (res) => ({
   type: actionTypes.CHANGE_UP_RANKING,
   upRanking: res.playlist
@@ -33,6 +31,10 @@ const changeNewRankingAction = (res) => ({
 const changeOriginRankingAction = (res) => ({
   type: actionTypes.CHANGE_ORIGIN_RANKING,
   originRanking: res.playlist
+})
+const changeSettleSingsAction = (res) => ({
+  type: actionTypes.CHANGE_SETTLE_SINGS,
+  settleSings: res.artists
 })
 
 export const getTopBannerAction = () => {
@@ -75,6 +77,14 @@ export const getTopListAction = (idx) => {
         default:
           break;
       }
+    })
+  }
+}
+
+export const getSettleSingers = () => {
+  return dispatch => {
+    getArtistList(5, 5001).then(res => {
+      dispatch(changeSettleSingsAction(res))
     })
   }
 }
