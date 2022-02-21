@@ -2,12 +2,12 @@ import React, { memo } from 'react'
 import { NavLink } from 'react-router-dom'
 
 import { dicoverMenu } from 'common/local-data'
+import { renderRoutes } from 'react-router-config'
 
 import {
   DiscoverWrapper,
   TopMenu
 } from "./style"
-import { renderRoutes } from 'react-router-config'
 
 const WYDiscover = memo((props) => {
 

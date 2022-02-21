@@ -30,9 +30,9 @@ const routes = [
       {
         path: "/discover",
         exact: true,
-        render: () => {
+        render: () => ( // 注意，是括号！！！ ，下面 to 可以为 to = {"/discover/recommend" /}
           <Redirect to="/discover/recommend"/>
-        }
+        )
       },
       {
         path: "/discover/recommend",

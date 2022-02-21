@@ -11,6 +11,7 @@ import store from './store';
 // 组件
 import WYMusicHeader from 'components/app-header';
 import WYMusicFooter from 'components/app-footer';
+import AppPlayerBar from 'pages/player/app-player-bar'
 
 const App = memo(() => {
   return (
@@ -23,6 +24,8 @@ const App = memo(() => {
       {renderRoutes(routes)}
       
       <WYMusicFooter/>
+      
+      <AppPlayerBar/>
 
     </HashRouter>
 
