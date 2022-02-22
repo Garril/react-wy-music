@@ -13,6 +13,7 @@ import WYDjradio from '../pages/discover/child-pages/djradio'
 import WYRanking from '../pages/discover/child-pages/ranking'
 import WYRecommend from '../pages/discover/child-pages/recommend'
 import WYSongs from '../pages/discover/child-pages/songs'
+import WYPlayer from '../pages/player'
 
 
 const routes = [
@@ -57,6 +58,10 @@ const routes = [
       {
         path: "/discover/album",
         component: WYAlbum
+      },
+      {
+        path: "/discover/player",
+        component: WYPlayer
       }
     ]
   },
