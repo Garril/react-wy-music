@@ -19,6 +19,11 @@ const changeCurrentSongIndexAction = (index) => ({
   type: actionTypes.CHANGE_CURRENT_SONG_INDEX,
   index
 })
+
+export const changeCurrentLyricIndexAction = (index) => ({
+  type: actionTypes.CHANGE_CURRENT_LYRIC_INDEX,
+  index
+})
 export const changeSequenceAction = (sequence) => ({
   type: actionTypes.CHANGE_SEQUENCE,
   sequence

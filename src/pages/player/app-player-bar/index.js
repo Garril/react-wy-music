@@ -2,7 +2,7 @@ import React, { memo, useState, useEffect, useRef, useCallback } from 'react'
 import { shallowEqual, useDispatch, useSelector } from 'react-redux'
 import { NavLink } from 'react-router-dom'
 
-import { Slider } from 'antd'
+import { Slider, message } from 'antd'
 import { 
   getSizeImage,
   formatDate,
@@ -20,7 +20,8 @@ import {
 import { 
   getSongDetailAction,
   changeSequenceAction,
-  changePrevNextSongAction
+  changePrevNextSongAction,
+  changeCurrentLyricIndexAction
 } from '../store/actionCreator'
 
 
@@ -30,11 +31,20 @@ const AppPlayerBar = memo(() => {
   const [progress, setProgress] = useState(0);
   const [isChanging, setIsChanging] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [isLyricOpen,setIsLyricOpen] = useState(true)
   // redux
-  const { currentSong, sequence, playList } = useSelector(state => ({
+  const { 
+    currentSong,
+    sequence,
+    playList,
+    lyricList,
+    curLyricIndex
+  } = useSelector(state => ({
     currentSong: state.getIn(["player", "currentSong"]),
     sequence: state.getIn(["player","sequence"]),
-    playList: state.getIn(["player","playList"])
+    playList: state.getIn(["player","playList"]),
+    lyricList: state.getIn(["player","lyricList"]),
+    curLyricIndex: state.getIn(["player","curLyricIndex"]),
   }), shallowEqual)
 
   const dispatch = useDispatch()
@@ -75,7 +85,7 @@ const AppPlayerBar = memo(() => {
   const sliderAfterChange = useCallback((value) => { // value为进度，0-100
     const finalTime = ((value / 100) * currentSong.dt) / 1000 // 单位 s
     audioRef.current.currentTime = finalTime
-    setCurrentTime(finalTime * 1000) // 单位 ms
+    setCurrentTime(finalTime * 1000) // finalTime单位 ms
     setIsChanging(false)
     if(!isPlaying) {
       playMusic();
@@ -84,9 +94,38 @@ const AppPlayerBar = memo(() => {
 
   // 音乐播放时间变化时
   const timeUpdate = (e) => { // e括号不可省略
+    const curTime = e.target.currentTime // 单位 s
     if(!isChanging) {
-      setCurrentTime(e.target.currentTime * 1000) // 传入setCurrentTime单位为 s
-      setProgress((currentTime / currentSong.dt) * 100) // 数值---百分比进度
+      setCurrentTime(curTime * 1000) // 传入setCurrentTime单位为 ms
+      setProgress((currentTime / currentSong.dt) * 100) // 数值---百分比进度 (ms/ms * 100%)
+    }
+    // 歌词处理
+    let i = 0
+    for(; i < lyricList.length; i++) {
+      let lyricItem = lyricList[i]
+      if( currentTime < lyricItem.time ) {
+        break;
+      }
+    }
+    if(curLyricIndex !== i-1) {
+      dispatch(changeCurrentLyricIndexAction(i-1))
+      const content = lyricList?.[i-1]?.content
+      if(isLyricOpen) {
+        message.open({
+          content,
+          duration: 0,
+          key: "lyric",
+          onClick: ()=> { // 可以拓展---显示歌词加大减小按钮
+            console.log("hhh")
+          },
+          // style: {
+          //   fontSize: 20
+          // }
+        })
+      }
+    }
+    if(!isLyricOpen) { // 为了更快的关闭歌词，放到了外面
+      message.destroy("lyric")
     }
   }
   // 音乐播放结束时
@@ -105,6 +144,10 @@ const AppPlayerBar = memo(() => {
   }
   const changeMusic = (sign) => {
     dispatch(changePrevNextSongAction(sign))
+  }
+  // 改变歌词显示模式
+  const changeLyricOpenState = () => {
+    setIsLyricOpen(!isLyricOpen)
   }
 
   return (
@@ -147,8 +190,10 @@ const AppPlayerBar = memo(() => {
           </div>
         </PlayInfo>
 
-        <Operator sequence={sequence}>
+        <Operator sequence={sequence} isLyricOpen={isLyricOpen}>
           <div className="left">
+            <button className="sprite_lyric btn lyric"
+                    onClick={e => {changeLyricOpenState()}}></button>
             <button className="sprite_playbar btn favor"></button>
             <button className="sprite_playbar btn share"></button>
           </div>

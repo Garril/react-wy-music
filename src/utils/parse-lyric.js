@@ -8,7 +8,7 @@ export function parseLyric(lyricString) {
       const result = parseRegex.exec(line)
       if(!result) continue;
       const min = result[1] * 60 * 1000
-      const sec = result[2] & 1000
+      const sec = result[2] * 1000
       const ms = (result[3].length === 3) ? (result[3] * 1) : ( result[3] * 10 ) // 注意都要乘法。隐式转换格式
       const addTime = min + sec + ms
       const content = line.replace(parseRegex, "").trim();

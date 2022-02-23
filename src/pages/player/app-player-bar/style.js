@@ -128,6 +128,13 @@ export const Operator = styled.div`
   .favor {
     background-position: -88px -163px;
   }
+  
+  .lyric {
+    background-position-y: ${props => props.isLyricOpen? "-25px": "0"};
+  }
+  .lyric:hover {
+    background-position-y: -25px;
+  }
 
   .share {
     background-position: -114px -163px;
