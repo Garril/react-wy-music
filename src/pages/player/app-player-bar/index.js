@@ -19,17 +19,18 @@ import {
 
 import { 
   getSongDetailAction,
-  changeSequenceAction
+  changeSequenceAction,
+  changePrevNextSongAction
 } from '../store/actionCreator'
 
 
 const AppPlayerBar = memo(() => {
-
+  // state
   const [currentTime, setCurrentTime] = useState(0);
   const [progress, setProgress] = useState(0);
   const [isChanging, setIsChanging] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
-
+  // redux
   const { currentSong, sequence, playList } = useSelector(state => ({
     currentSong: state.getIn(["player", "currentSong"]),
     sequence: state.getIn(["player","sequence"]),
@@ -44,15 +45,25 @@ const AppPlayerBar = memo(() => {
 
   useEffect(() => {
     audioRef.current.src = getPlayUrl(currentSong.id)
+    // audioRef.current.play() 返回一个promise --- 处理部分歌曲请求失败或者要vip，无播放权限
+    audioRef.current.play().then(res => {
+      setIsPlaying(true)
+    }).catch(err => {
+      setIsPlaying(false)
+    })
   },[currentSong])
 
   const audioRef = useRef()
 
+  // methods
+
+  // 播放音乐
   const playMusic = useCallback(() => {
     isPlaying ? audioRef.current.pause() : audioRef.current.play();
     setIsPlaying(!isPlaying);
   },[isPlaying])
-  
+
+  // 进度条进行滑动
   const sliderChange = useCallback((value) => { // value为进度，0-100
     setIsChanging(true)
     const currSlideTime = ((value / 100) * currentSong.dt) // 单位 ms
@@ -60,6 +71,7 @@ const AppPlayerBar = memo(() => {
     setProgress(value)
   },[currentSong])
 
+  // 进度滑动结束
   const sliderAfterChange = useCallback((value) => { // value为进度，0-100
     const finalTime = ((value / 100) * currentSong.dt) / 1000 // 单位 s
     audioRef.current.currentTime = finalTime
@@ -70,23 +82,29 @@ const AppPlayerBar = memo(() => {
     }
   },[currentSong,playMusic,isPlaying])
 
-  // methods
+  // 音乐播放时间变化时
   const timeUpdate = (e) => { // e括号不可省略
     if(!isChanging) {
       setCurrentTime(e.target.currentTime * 1000) // 传入setCurrentTime单位为 s
       setProgress((currentTime / currentSong.dt) * 100) // 数值---百分比进度
     }
   }
+  // 音乐播放结束时
+  const handleMusicEnded = (e) => {
+    if(sequence === 2 || playList.length === 1) { // 单曲循环
+      audioRef.current.currentTime = 0
+      audioRef.current.play()
+    } else { // 随机/顺序播放
+      dispatch(changePrevNextSongAction(false))
+    }
+  }
+  // 改变播放模式
   const changeSequence = () => {
     let curSequence = (sequence + 1) % 3;
     dispatch(changeSequenceAction(curSequence))
   }
   const changeMusic = (sign) => {
-    if(sign) { // 下一曲
-
-    } else { // 前一曲
-
-    }
+    dispatch(changePrevNextSongAction(sign))
   }
 
   return (
@@ -143,7 +161,9 @@ const AppPlayerBar = memo(() => {
 
       </div>
 
-      <audio ref={audioRef} onTimeUpdate={timeUpdate} />
+      <audio ref={audioRef} 
+            onTimeUpdate={timeUpdate} 
+            onEnded={handleMusicEnded}/>
 
     </PlaybarWrapper>
   )

@@ -2,10 +2,11 @@ import { Map } from "immutable";
 import * as actionTypes from './constants'
 
 const defaultState = Map({
-  currentSong: {},
-  playList: [],
-  currentSongIndex: 0,
+  currentSong: {}, // 当前播放歌曲
+  playList: [], // 播放列表
+  currentSongIndex: 0, // 当前歌曲在list中index
   sequence: 0, // 0 列表循环 1 随机播放 2 单曲循环
+  lyricList: [], // 歌词
 })
 
 export default function reducer(state = defaultState, action) {
@@ -18,6 +19,8 @@ export default function reducer(state = defaultState, action) {
       return state.set("currentSongIndex", action.index)
     case actionTypes.CHANGE_SEQUENCE:
       return state.set("sequence", action.sequence)
+    case actionTypes.CHANGE_LYRIC: 
+      return state.set("lyricList", action.lyricList)
     default:
       return state;
   }
