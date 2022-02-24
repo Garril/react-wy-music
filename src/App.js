@@ -1,5 +1,5 @@
 // 第三方
-import React, { memo } from 'react';
+import React, { memo,Suspense } from 'react';
 import { renderRoutes } from 'react-router-config';
 import { HashRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
@@ -20,9 +20,11 @@ const App = memo(() => {
     <HashRouter>
 
       <WYMusicHeader/>
+        
+      <Suspense fallback={<div>page loading</div>}>
+        {renderRoutes(routes)}
+      </Suspense>
 
-      {renderRoutes(routes)}
-      
       <WYMusicFooter/>
       
       <AppPlayerBar/>
